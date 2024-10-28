@@ -58,7 +58,12 @@ namespace OWSData.SQL
 	            WHERE U.CustomerGUID=@CustomerGUID
 	            AND U.Email=@Email";
 
-		public static readonly string GetCharacterByNameSQL = @"SELECT C.CharacterID, C.CharName, C.X, C.Y, C.Z, C.RX, C.RY, C.RZ, C.MapName as ZoneName
+        public static readonly string GetUserFromUsernameSQL = @"SELECT U.Email, U.Username, U.FirstName, U.LastName, U.CreateDate, U.LastAccess, U.Role
+	            FROM Users U
+	            WHERE U.CustomerGUID=@CustomerGUID
+	            AND U.Username=@Username";
+
+        public static readonly string GetCharacterByNameSQL = @"SELECT C.CharacterID, C.CharName, C.X, C.Y, C.Z, C.RX, C.RY, C.RZ, C.MapName as ZoneName
 	            FROM Characters C
 	            WHERE C.CustomerGUID=@CustomerGUID
 	            AND C.CharName=@CharacterName";

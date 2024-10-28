@@ -13,5 +13,7 @@ export default {
     updateUser(data: Record<string, unknown>) {
         return client.put('/Users', data);
     },
-
+    removeUser(data: Record<string, unknown>) {
+        return client.post('/Users/RemoveUser', data);
+    }
 }

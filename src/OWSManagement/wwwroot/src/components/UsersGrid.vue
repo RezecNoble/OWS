@@ -9,13 +9,16 @@
         showEditingUserDialog: boolean,
         editUser: Record<string, unknown>,
         editUserIndex: number,
+        deleteUser: Record<string, unknown>,
+        deleteUserIndex: number,
         addingANewUser: boolean
     }
 
     const data: Data = reactive({
         headers: [
             { title: 'Actions', sortable: false, align: 'start', key: 'actions' },
-            { title: 'First Name', align: 'start', key: 'firstName', },
+            { title: 'Username', align: 'start', key: 'username', },
+            { title: 'First Name', key: 'firstName', },
             { title: 'Last Name', key: 'lastName' },
             { title: 'Email', key: 'email' },
             { title: 'Role', key: 'role' }
@@ -24,6 +27,8 @@
         showEditingUserDialog: false,
         editUser: {},
         editUserIndex: -1,
+        deleteUser: {},
+        deleteUserIndex: -1,
         addingANewUser: false
     });
 
@@ -73,9 +78,28 @@
         data.showEditingUserDialog = false;
     }
 
-    function deleteUser(userToDelete: Record<string, unknown>) {
-        if (confirm("Are you sure you want to remove the player: " + userToDelete.firstName + " " + userToDelete.lastName)) {
-            alert("Delete the user.  Not implemented yet!");
+    function deleteUser(userToDelete: Record<string, unknown>) 
+    {
+        if (confirm("Are you sure you want to remove the player with the email: " + userToDelete.email + " and the username:" + userToDelete.username + "? A player with existing characters will not be deleted unless all characters are removed first.")) 
+        {
+            //alert("Delete the user.  Not implemented yet!");
+            data.deleteUserIndex = data.rows.indexOf(userToDelete);
+            data.deleteUser = Object.assign({}, userToDelete);
+            owsApi.removeUser(data.deleteUser).then((response: any) => {
+            if (response.data != null) {
+                if (response.data) {
+                    alert("User deleted!");
+                    location.reload(); // Reloads the current page
+                }
+                else {
+                    alert("Unable to delete the user!");
+                }
+            }
+        }).catch((error: any) => {
+            console.log(error);
+        }).finally(function () {
+
+        });
         }
     }
 
@@ -94,7 +118,7 @@
             <div>
                 <v-data-table :headers="data.headers"
                               :items="data.rows"
-                              :items-per-page="5"
+                              :items-per-page="20"
                               class="elevation-1 users-table">
                         
                     <template v-slot:top>
@@ -117,6 +141,12 @@
                                     <v-card-text>
                                         <v-container>
                                             <v-row>
+                                                <v-col cols="10"
+                                                       sm="10"
+                                                       md="10">
+                                                    <v-text-field v-model="data.editUser.username"
+                                                                  label="Username"></v-text-field>
+                                                </v-col>
                                                 <v-col cols="10"
                                                        sm="10"
                                                        md="10">

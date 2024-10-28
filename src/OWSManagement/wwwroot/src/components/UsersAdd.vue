@@ -7,6 +7,7 @@
         valid: boolean,
         addUserForm: Record<string, unknown>,
         nameRules: Array<any>,
+        usernameRules: Array<any>,
         emailRules: Array<any>,
         passwordRules: Array<any>
     }
@@ -14,6 +15,7 @@
     const data: Data = reactive({
         valid: true,
         addUserForm: {
+            username: '',
             firstName: '',
             lastName: '',
             email: '',
@@ -23,13 +25,17 @@
             (v: string) => !!v || 'Name is required',
             (v: HTMLFormElement) => (v && v.length < 20) || "Name must be less than 20 characters",
         ],
+        usernameRules: [
+            (v: string) => !!v || 'User is required',
+            (v: HTMLFormElement) => (v && v.length < 20) || "Username must be less than 20 characters",
+        ],
         emailRules: [
             (v: string) => !!v || 'E-mail is required',
             (v: string) => /.+@.+\..+/.test(v) || 'E-mail must be valid',
         ],
         passwordRules: [
             (v: string) => !!v || 'Password is required',
-            (v: HTMLFormElement) => (v && v.length >= 6) || 'Password must be 6 or more characters in length',
+            (v: HTMLFormElement) => (v && v.length >= 8) || 'Password must be 8 or more characters in length',
         ],
     });
 
@@ -72,6 +78,12 @@
             <v-form ref="form"
                     v-model="data.valid"
                     lazy-validation>
+
+                <v-text-field v-model="data.addUserForm.username"
+                              :counter="20"
+                              :rules="data.usernameRules"
+                              label="Username"
+                              required></v-text-field>
 
                 <v-text-field v-model="data.addUserForm.firstName"
                               :counter="20"

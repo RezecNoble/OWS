@@ -312,7 +312,7 @@ namespace OWSData.Repositories.Implementations.Postgres
             }
         }
 
-        public async Task<SuccessAndErrorMessage> RegisterUser(Guid customerGUID, string email, string password, string firstName, string lastName)
+        public async Task<SuccessAndErrorMessage> RegisterUser(Guid customerGUID, string email, string password, string username, string firstName, string lastName)
         {
             SuccessAndErrorMessage outputObject = new SuccessAndErrorMessage();
 
@@ -324,11 +324,12 @@ namespace OWSData.Repositories.Implementations.Postgres
                     p.Add("@CustomerGUID", customerGUID);
                     p.Add("@Email", email);
                     p.Add("@Password", password);
+                    p.Add("@Username", username);
                     p.Add("@FirstName", firstName);
                     p.Add("@LastName", lastName);
                     p.Add("@Role", "Player");
 
-                    await Connection.ExecuteAsync("select * from AddUser(@CustomerGUID, @FirstName, @LastName, @Email, @Password, @Role)",
+                    await Connection.ExecuteAsync("select * from AddUser(@CustomerGUID, @FirstName, @LastName, @Email, @Password, @Role, @Username)",
                         p,
                         commandType: CommandType.Text);
                 }
@@ -354,6 +355,18 @@ namespace OWSData.Repositories.Implementations.Postgres
             using (Connection)
             {
                 outputObject = await Connection.QueryFirstOrDefaultAsync<GetUserSession>(PostgresQueries.GetUserFromEmailSQL, new { @CustomerGUID = customerGUID, @Email = email });
+            }
+
+            return outputObject;
+        }
+
+        public async Task<GetUserSession> GetUserFromUsername(Guid customerGUID, string username)
+        {
+            GetUserSession outputObject;
+
+            using (Connection)
+            {
+                outputObject = await Connection.QueryFirstOrDefaultAsync<GetUserSession>(PostgresQueries.GetUserFromUsernameSQL, new { CustomerGUID = customerGUID, @Username = username });
             }
 
             return outputObject;
@@ -391,7 +404,7 @@ namespace OWSData.Repositories.Implementations.Postgres
             }
         }
 
-        public async Task<SuccessAndErrorMessage> UpdateUser(Guid customerGuid, Guid userGuid, string firstName, string lastName, string email)
+        public async Task<SuccessAndErrorMessage> UpdateUser(Guid customerGuid, Guid userGuid, string username, string firstName, string lastName, string email)
         {
             SuccessAndErrorMessage outputObject = new SuccessAndErrorMessage();
 
@@ -402,6 +415,7 @@ namespace OWSData.Repositories.Implementations.Postgres
                     var p = new DynamicParameters();
                     p.Add("@CustomerGUID", customerGuid);
                     p.Add("@UserGUID", userGuid);
+                    p.Add("@Username", username);
                     p.Add("@FirstName", firstName);
                     p.Add("@LastName", lastName);
                     p.Add("@Email", email);
@@ -409,6 +423,36 @@ namespace OWSData.Repositories.Implementations.Postgres
                     await Connection.ExecuteAsync(GenericQueries.UpdateUser,
                         p,
                         commandType: CommandType.Text);
+                }
+
+                outputObject.Success = true;
+                outputObject.ErrorMessage = "";
+
+                return outputObject;
+            }
+            catch (Exception ex)
+            {
+                outputObject.Success = false;
+                outputObject.ErrorMessage = ex.Message;
+
+                return outputObject;
+            }
+        }
+
+        public async Task<SuccessAndErrorMessage> RemoveUser(Guid customerGuid, Guid userGuid, string email)
+        {
+            SuccessAndErrorMessage outputObject = new SuccessAndErrorMessage();
+
+            try
+            {
+                using (Connection)
+                {
+                    var p = new DynamicParameters();
+                    p.Add("@CustomerGUID", customerGuid);
+                    p.Add("@UserGUID", userGuid);
+                    p.Add("@Email", email);
+
+                    await Connection.ExecuteAsync(GenericQueries.RemoveUser, p, commandType: CommandType.Text);
                 }
 
                 outputObject.Success = true;

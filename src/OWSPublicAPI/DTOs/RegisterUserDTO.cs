@@ -23,6 +23,13 @@
         /// </remarks>
         public string Password { get; set; }
         /// <summary>
+        /// Username
+        /// </summary>
+        /// <remarks>
+        /// Username for the user.  This value is not meant to be displayed in game.
+        /// </remarks>
+        public string Username { get; set; }
+        /// <summary>
         /// First Name
         /// </summary>
         /// <remarks>

@@ -12,6 +12,9 @@ namespace OWSShared.Interfaces
         //Validate the Email that is input by the user.  Return empty string for success or error message text to be returned to the user as a validation error.
         public string ValidateEmail(string email);
 
+        //Validate the Username that is input by the user.  Return empty string for success or error message text to be returned to the user as a validation error.
+        public string ValidateUsername(string username);
+
         //Validate the First Name that is input by the user.  Return empty string for success or error message text to be returned to the user as a validation error.
         public string ValidateFirstName(string firstName);
 

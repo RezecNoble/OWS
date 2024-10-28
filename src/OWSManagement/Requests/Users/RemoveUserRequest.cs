@@ -9,22 +9,22 @@ using System.Threading.Tasks;
 
 namespace OWSManagement.Requests.Users
 {
-    public class AddUserRequest
+    public class RemoveUserRequest
     {
         private readonly Guid _customerGuid;
-        private AddUserDTO _addUserDTO { get; set; }
+        private RemoveUserDTO _removeUserDTO { get; set; }
         private readonly IUsersRepository _usersRepository;        
 
-        public AddUserRequest(Guid customerGuid, AddUserDTO addUserDTO, IUsersRepository usersRepository)
+        public RemoveUserRequest(Guid customerGuid, RemoveUserDTO removeUserDTO, IUsersRepository usersRepository)
         {
             _customerGuid = customerGuid;
-            _addUserDTO = addUserDTO;
+            _removeUserDTO = removeUserDTO;
             _usersRepository = usersRepository;
         }
 
         public async Task<SuccessAndErrorMessage> Handle()
         {
-            return await _usersRepository.RegisterUser(_customerGuid, _addUserDTO.Email, _addUserDTO.Password, _addUserDTO.Username, _addUserDTO.FirstName, _addUserDTO.LastName);
+            return await _usersRepository.RemoveUser(_customerGuid, _removeUserDTO.UserGUID, _removeUserDTO.Email);
         }
     }
 }

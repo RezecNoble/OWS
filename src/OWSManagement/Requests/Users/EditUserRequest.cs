@@ -21,7 +21,7 @@ namespace OWSManagement.Requests.Users
 
         public async Task<SuccessAndErrorMessage> Handle()
         {
-            return await _usersRepository.UpdateUser(_customerGuid, _editUserDTO.UserGUID, _editUserDTO.FirstName, _editUserDTO.LastName, _editUserDTO.Email);
+            return await _usersRepository.UpdateUser(_customerGuid, _editUserDTO.UserGUID, _editUserDTO.Username, _editUserDTO.FirstName, _editUserDTO.LastName, _editUserDTO.Email);
         }
     }
 }

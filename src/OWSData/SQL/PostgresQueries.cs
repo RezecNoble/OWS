@@ -61,6 +61,11 @@ ON CONFLICT ON CONSTRAINT ak_zoneservers
 	            WHERE U.CustomerGUID=@CustomerGUID::UUID
 	            AND U.Email=@Email";
 
+        public static readonly string GetUserFromUsernameSQL = @"SELECT U.Email, U.Username, U.FirstName, U.LastName, U.CreateDate, U.LastAccess, U.Role
+	            FROM Users U
+				WHERE U.CustomerGUID=@CustomerGUID::UUID
+	            AND U.Username=@Username";
+
         public static readonly string GetCharacterByNameSQL = @"SELECT C.CharacterID, C.CharName, C.X, C.Y, C.Z, C.RX, C.RY, C.RZ, C.MapName as ZoneName
 	            FROM Characters C
 	            WHERE C.CustomerGUID=@CustomerGUID::UUID

@@ -24,6 +24,7 @@ namespace OWSPublicAPI.Requests.Users
         private readonly Guid _customerGUID;
         private readonly IUsersRepository _usersRepository;
         private readonly IExternalLoginProviderFactory _externalLoginProviderFactory;
+        private readonly IPublicAPIInputValidation _publicAPIInputValidation;
 
         /// <summary>
         /// RegisterUserRequest Constructor
@@ -31,12 +32,14 @@ namespace OWSPublicAPI.Requests.Users
         /// <remarks>
         /// Initialize the RegisterUserRequest object with dependencies
         /// </remarks>
-        public RegisterUserRequest(RegisterUserDTO registerUserDTO, IUsersRepository usersRepository, IExternalLoginProviderFactory externalLoginProviderFactory, IHeaderCustomerGUID customerGuid)
+        public RegisterUserRequest(RegisterUserDTO registerUserDTO, IUsersRepository usersRepository, IExternalLoginProviderFactory externalLoginProviderFactory, IHeaderCustomerGUID customerGuid,
+            IPublicAPIInputValidation publicAPIInputValidation)
         {
             _registerUserDTO = registerUserDTO;
             _customerGUID = customerGuid.CustomerGUID;
             _usersRepository = usersRepository;
             _externalLoginProviderFactory = externalLoginProviderFactory;
+            _publicAPIInputValidation = publicAPIInputValidation;
         }
 
         /// <summary>
@@ -47,7 +50,10 @@ namespace OWSPublicAPI.Requests.Users
         /// </remarks>
         public async Task<PlayerLoginAndCreateSession> Handle()
         {
-            //Check for duplicate account before creating a new one:
+            //Validate Email Address
+            string errorMessage = _publicAPIInputValidation.ValidateEmail(_registerUserDTO.Email);
+
+            //Check for duplicate email address before creating a new account:
             var foundUser = await _usersRepository.GetUserFromEmail(_customerGUID, _registerUserDTO.Email);
 
             //This user already exists
@@ -55,14 +61,42 @@ namespace OWSPublicAPI.Requests.Users
             {
                 PlayerLoginAndCreateSession errorOutput = new PlayerLoginAndCreateSession()
                 {
-                    ErrorMessage = "Duplicate Account!"
+                    ErrorMessage = "Duplicate Email Address!"
                 };
 
                 return errorOutput;
             }
 
+            //Validate Username
+            errorMessage = _publicAPIInputValidation.ValidateUsername(_registerUserDTO.Username);
+
+            //Check for duplicate username before creating a new account:
+            var foundUserName = await _usersRepository.GetUserFromUsername(_customerGUID, _registerUserDTO.Username);
+            
+            //This username already exists
+            if (foundUserName != null)
+            {
+                PlayerLoginAndCreateSession errorOutput = new PlayerLoginAndCreateSession()
+                {
+                    ErrorMessage = "Duplicate Username!"
+                };
+
+                return errorOutput;
+            }
+
+            //Validate password
+            errorMessage = _publicAPIInputValidation.ValidatePassword(_registerUserDTO.Password);
+
+            //If any of the validation checks found issues
+            if (!String.IsNullOrEmpty(errorMessage))
+            {
+                PlayerLoginAndCreateSession errorOutput = new PlayerLoginAndCreateSession();
+                errorOutput.ErrorMessage = errorMessage;
+                return errorOutput;
+            }
+
             //Register the new account
-            SuccessAndErrorMessage registerOutput = await _usersRepository.RegisterUser(_customerGUID, _registerUserDTO.Email, _registerUserDTO.Password, _registerUserDTO.FirstName, _registerUserDTO.LastName);
+            SuccessAndErrorMessage registerOutput = await _usersRepository.RegisterUser(_customerGUID, _registerUserDTO.Email, _registerUserDTO.Password, _registerUserDTO.Username, _registerUserDTO.FirstName, _registerUserDTO.LastName);
 
             //There was an error registering the new account
             if (!registerOutput.Success)

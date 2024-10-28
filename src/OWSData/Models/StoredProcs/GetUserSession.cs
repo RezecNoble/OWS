@@ -20,6 +20,7 @@ namespace OWSData.Models.StoredProcs
         public Guid UserSessionGUID { get; set; }
         public DateTime LoginDate { get; set; }
         public string SelectedCharacterName { get; set; }
+        public string Username { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

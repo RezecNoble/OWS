@@ -23,10 +23,12 @@ namespace OWSData.Repositories.Interfaces
         Task<PlayerLoginAndCreateSession> LoginAndCreateSession(Guid customerGUID, string email, string password, bool dontCheckPassword = false);
         Task<SuccessAndErrorMessage> Logout(Guid customerGuid, Guid userSessionGuid);
         Task<SuccessAndErrorMessage> UserSessionSetSelectedCharacter(Guid customerGUID, Guid userSessionGUID, string selectedCharacterName);
-        Task<SuccessAndErrorMessage> RegisterUser(Guid customerGUID, string userName, string password, string firstName, string lastName);
+        Task<SuccessAndErrorMessage> RegisterUser(Guid customerGUID, string email, string password, string userName, string firstName, string lastName);
         Task<GetUserSession> GetUserFromEmail(Guid customerGUID, string email);
+        Task<GetUserSession> GetUserFromUsername(Guid customerGUID, string username);
         Task<SuccessAndErrorMessage> RemoveCharacter(Guid customerGUID, Guid userSessionGUID, string characterName);
-        Task<SuccessAndErrorMessage> UpdateUser(Guid customerGuid, Guid userGuid, string firstName, string lastName, string email);
-        
+        Task<SuccessAndErrorMessage> UpdateUser(Guid customerGuid, Guid userGuid, string userName, string firstName, string lastName, string email);
+        Task<SuccessAndErrorMessage> RemoveUser(Guid customerGuid, Guid userGuid, string email);
+
     }
 }

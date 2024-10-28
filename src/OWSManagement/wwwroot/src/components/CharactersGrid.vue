@@ -22,7 +22,7 @@
             <v-data-table
                 :headers = "data.headers"
                 :items = "data.rows"
-                :items-per-page="5"
+                :items-per-page="10"
                 class="elevation-1 users-table">
             </v-data-table>
         </div>
