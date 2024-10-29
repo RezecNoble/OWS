@@ -17,8 +17,8 @@
     const data: Data = reactive({
         headers: [
             { title: 'Actions', sortable: false, align: 'start', key: 'actions' },
-            { title: 'Username', align: 'start', key: 'username', },
-            { title: 'First Name', key: 'firstName', },
+            { title: 'Username', align: 'start', key: 'username' },
+            { title: 'First Name', key: 'firstName' },
             { title: 'Last Name', key: 'lastName' },
             { title: 'Email', key: 'email' },
             { title: 'Role', key: 'role' }

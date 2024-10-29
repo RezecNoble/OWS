@@ -134,14 +134,17 @@ namespace OWSManagement
                     case "mssql":
                         container.Register<ICharactersRepository, OWSData.Repositories.Implementations.MSSQL.CharactersRepository>(Lifestyle.Transient);
                         container.Register<IUsersRepository, OWSData.Repositories.Implementations.MSSQL.UsersRepository>(Lifestyle.Transient);
+                        container.Register<IInstanceManagementRepository, OWSData.Repositories.Implementations.MSSQL.InstanceManagementRepository>(Lifestyle.Transient);
                         break;
                     case "mysql":
                         container.Register<ICharactersRepository, OWSData.Repositories.Implementations.MySQL.CharactersRepository>(Lifestyle.Transient);
                         container.Register<IUsersRepository, OWSData.Repositories.Implementations.MySQL.UsersRepository>(Lifestyle.Transient);
+                        container.Register<IInstanceManagementRepository, OWSData.Repositories.Implementations.MySQL.InstanceManagementRepository>(Lifestyle.Transient);
                         break;
                     default: // Default to postgres
                         container.Register<ICharactersRepository, OWSData.Repositories.Implementations.Postgres.CharactersRepository>(Lifestyle.Transient);
                         container.Register<IUsersRepository, OWSData.Repositories.Implementations.Postgres.UsersRepository>(Lifestyle.Transient);
+                        container.Register<IInstanceManagementRepository, OWSData.Repositories.Implementations.Postgres.InstanceManagementRepository>(Lifestyle.Transient);
                         break;
                 }
             }

@@ -15,5 +15,17 @@ export default {
     },
     removeUser(data: Record<string, unknown>) {
         return client.post('/Users/RemoveUser', data);
-    }
+    },
+    getCharacters() {
+        return client.get('/Characters/Get');
+    },
+    getWorldServers() {
+        return client.get('/WorldServers/Get');
+    },
+    getZones() {
+        return client.get('/Zones/Get');
+    },
+    getZoneInstances() {
+        return client.get('/Zones/GetInstances');
+    },
 }
